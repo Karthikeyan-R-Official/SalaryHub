@@ -1,0 +1,215 @@
+<div class="page-container">
+
+  <div class="page-heading">
+    <div>
+      <a
+        [routerLink]="isEditMode && employeeId !== null
+          ? ['/employees', employeeId]
+          : ['/employees']"
+        class="back-link"
+      >
+        ← {{ isEditMode ? 'Back to Employee Details' : 'Back to Employees' }}
+      </a>
+
+      <h1>{{ isEditMode ? 'Edit Employee' : 'Add Employee' }}</h1>
+
+      <p>
+        {{
+        isEditMode
+        ? 'Update the employee information.'
+        : 'Create a new employee record in SalaryHub.'
+        }}
+      </p>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-message">
+    Loading employee details...
+  </div>
+
+  <div *ngIf="errorMessage && !loading" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <form
+    *ngIf="!loading && (!isEditMode || !errorMessage)"
+    #employeeForm="ngForm"
+    (ngSubmit)="submitForm()"
+    class="employee-form"
+  >
+
+    <div class="form-section">
+      <h2>Personal Information</h2>
+      <p>Enter the employee's basic details.</p>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label for="employeeCode">Employee ID *</label>
+          <input
+            id="employeeCode"
+            name="employeeCode"
+            type="text"
+            [(ngModel)]="employee.employeeCode"
+            maxlength="20"
+            required
+            placeholder="e.g. EMP10001"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address *</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            [(ngModel)]="employee.email"
+            maxlength="150"
+            required
+            email
+            placeholder="employee@company.com"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="firstName">First Name *</label>
+          <input
+            id="firstName"
+            name="firstName"
+            type="text"
+            [(ngModel)]="employee.firstName"
+            maxlength="100"
+            required
+            placeholder="First name"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="lastName">Last Name *</label>
+          <input
+            id="lastName"
+            name="lastName"
+            type="text"
+            [(ngModel)]="employee.lastName"
+            maxlength="100"
+            required
+            placeholder="Last name"
+          />
+        </div>
+
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h2>Employment Information</h2>
+      <p>Enter the employee's work details.</p>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label for="country">Country *</label>
+          <select
+            id="country"
+            name="country"
+            [(ngModel)]="employee.country"
+            required
+          >
+            <option value="">Select country</option>
+            <option *ngFor="let country of countries" [value]="country">
+              {{ country }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="department">Department *</label>
+          <select
+            id="department"
+            name="department"
+            [(ngModel)]="employee.department"
+            required
+          >
+            <option value="">Select department</option>
+            <option
+              *ngFor="let department of departments"
+              [value]="department"
+            >
+              {{ department }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="jobTitle">Job Title *</label>
+          <input
+            id="jobTitle"
+            name="jobTitle"
+            type="text"
+            [(ngModel)]="employee.jobTitle"
+            maxlength="100"
+            required
+            placeholder="e.g. Software Engineer"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="hireDate">Hire Date *</label>
+          <input
+            id="hireDate"
+            name="hireDate"
+            type="date"
+            [(ngModel)]="employee.hireDate"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="employmentStatus">Employment Status</label>
+          <select
+            id="employmentStatus"
+            name="employmentStatus"
+            [(ngModel)]="employee.employmentStatus"
+          >
+            <option
+              *ngFor="let status of statuses"
+              [value]="status"
+            >
+              {{ status }}
+            </option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
+    <div class="form-actions">
+      <a
+        [routerLink]="isEditMode && employeeId !== null
+          ? ['/employees', employeeId]
+          : ['/employees']"
+        class="cancel-button"
+      >
+        Cancel
+      </a>
+
+      <button
+        type="submit"
+        class="submit-button"
+        [disabled]="saving || employeeForm.invalid"
+      >
+        {{
+        saving
+        ? 'Saving...'
+        : isEditMode
+        ? 'Save Changes'
+        : 'Create Employee'
+        }}
+      </button>
+    </div>
+
+  </form>
+</div>

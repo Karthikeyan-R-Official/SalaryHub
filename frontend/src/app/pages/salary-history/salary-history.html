@@ -1,0 +1,196 @@
+<div class="salary-page">
+
+  <div class="page-header">
+    <div>
+      <a [routerLink]="['/employees', employeeId]" class="back-link">
+        ← Back to Employee
+      </a>
+
+      <h1>Salary Management</h1>
+      <p>View salary details and manage salary revisions.</p>
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert error">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="successMessage" class="alert success">
+    {{ successMessage }}
+  </div>
+
+  <section class="current-salary-card">
+    <div>
+      <h2>Current Salary</h2>
+
+      <ng-container *ngIf="currentSalary; else noCurrentSalary">
+        <div class="salary-amount">
+          {{ currentSalary.amount | number:'1.2-2' }}
+          <span>{{ currentSalary.currency }}</span>
+        </div>
+
+        <p>
+          Effective from:
+          {{ currentSalary.effectiveDate | date:'dd MMM yyyy' }}
+        </p>
+      </ng-container>
+
+      <ng-template #noCurrentSalary>
+        <p>No effective salary record is available.</p>
+      </ng-template>
+    </div>
+  </section>
+
+  <section class="form-card">
+    <h2>Add Salary Revision</h2>
+
+    <p class="section-description">
+      Add a new salary record with its effective date.
+    </p>
+
+    <form (ngSubmit)="addSalaryRevision()" #salaryForm="ngForm">
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label for="amount">Salary Amount</label>
+
+          <input
+            id="amount"
+            type="number"
+            name="amount"
+            [(ngModel)]="form.amount"
+            min="0.01"
+            step="0.01"
+            placeholder="Enter salary amount"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="currency">Currency</label>
+
+          <select
+            id="currency"
+            name="currency"
+            [(ngModel)]="form.currency"
+            required
+          >
+            <option value="INR">INR - Indian Rupee</option>
+            <option value="USD">USD - US Dollar</option>
+            <option value="EUR">EUR - Euro</option>
+            <option value="GBP">GBP - British Pound</option>
+            <option value="SGD">SGD - Singapore Dollar</option>
+            <option value="AED">AED - UAE Dirham</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="effectiveDate">Effective Date</label>
+
+          <input
+            id="effectiveDate"
+            type="date"
+            name="effectiveDate"
+            [(ngModel)]="form.effectiveDate"
+            required
+          />
+        </div>
+
+        <div class="form-group full-width">
+          <label for="notes">Notes (Optional)</label>
+
+          <textarea
+            id="notes"
+            name="notes"
+            [(ngModel)]="form.notes"
+            maxlength="500"
+            rows="3"
+            placeholder="Reason for salary revision"
+          ></textarea>
+        </div>
+
+      </div>
+
+      <button
+        type="submit"
+        class="primary-button"
+        [disabled]="salaryForm.invalid || submitting"
+      >
+        {{ submitting ? 'Saving...' : 'Add Salary Revision' }}
+      </button>
+
+    </form>
+  </section>
+
+  <section class="history-card">
+
+    <div class="section-header">
+      <div>
+        <h2>Salary History</h2>
+
+        <p class="section-description">
+          Previous and upcoming salary revisions.
+        </p>
+      </div>
+
+      <span class="record-count">
+        {{ salaryHistory.length }} Records
+      </span>
+    </div>
+
+    <div *ngIf="loading" class="loading-message">
+      Loading salary history...
+    </div>
+
+    <div
+      *ngIf="!loading && salaryHistory.length === 0"
+      class="empty-message"
+    >
+      No salary records found for this employee.
+    </div>
+
+    <div
+      *ngIf="!loading && salaryHistory.length > 0"
+      class="table-container"
+    >
+      <table>
+
+        <thead>
+        <tr>
+          <th>Effective Date</th>
+          <th>Salary Amount</th>
+          <th>Currency</th>
+          <th>Notes</th>
+          <th>Record Created</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let record of salaryHistory">
+
+          <td>
+            {{ record.effectiveDate | date:'dd MMM yyyy' }}
+          </td>
+
+          <td class="amount-cell">
+            {{ record.amount | number:'1.2-2' }}
+          </td>
+
+          <td>{{ record.currency }}</td>
+
+          <td>{{ record.notes || '—' }}</td>
+
+          <td>
+            {{ record.createdAt | date:'dd MMM yyyy' }}
+          </td>
+
+        </tr>
+        </tbody>
+
+      </table>
+    </div>
+
+  </section>
+
+</div>

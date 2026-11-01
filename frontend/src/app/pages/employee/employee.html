@@ -1,0 +1,133 @@
+<section class="page-heading">
+  <div>
+    <h1>Employee Management</h1>
+    <p>Manage employee information, departments and employment status.</p>
+  </div>
+
+  <a routerLink="/employees/new" class="add-employee-button">
+    + Add Employee
+  </a>
+</section>
+
+<section class="employee-summary">
+  <div class="summary-card">
+    <span>Total Employees</span>
+    <strong>{{ totalElements | number }}</strong>
+  </div>
+
+  <div class="summary-card">
+    <span>Current Page</span>
+    <strong>{{ currentPage + 1 }} / {{ totalPages || 1 }}</strong>
+  </div>
+</section>
+
+<section class="employee-panel">
+  <div class="filter-section">
+    <input
+      type="text"
+      placeholder="Search by name, email or employee ID"
+      [(ngModel)]="search"
+      (keyup.enter)="applyFilters()"
+    />
+
+    <select [(ngModel)]="country" (change)="applyFilters()">
+      <option value="">All Countries</option>
+      <option *ngFor="let item of countries" [value]="item">
+        {{ item }}
+      </option>
+    </select>
+
+    <select [(ngModel)]="department" (change)="applyFilters()">
+      <option value="">All Departments</option>
+      <option *ngFor="let item of departments" [value]="item">
+        {{ item }}
+      </option>
+    </select>
+
+    <button class="primary-button" (click)="applyFilters()">Search</button>
+    <button class="secondary-button" (click)="clearFilters()">Clear</button>
+  </div>
+
+  <div *ngIf="loading" class="message">
+    Loading employees...
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="!loading && !errorMessage" class="table-wrapper">
+    <table>
+      <thead>
+      <tr>
+        <th>Employee</th>
+        <th>Employee ID</th>
+        <th>Country</th>
+        <th>Department</th>
+        <th>Job Title</th>
+        <th>Status</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr *ngFor="let employee of employees; trackBy: trackByEmployeeId">
+        <td>
+          <div class="employee-name">
+            <a [routerLink]="['/employees', employee.id]">
+              <strong>{{ employee.firstName }} {{ employee.lastName }}</strong>
+            </a>
+            <small>{{ employee.email }}</small>
+          </div>
+        </td>
+
+        <td>{{ employee.employeeCode }}</td>
+        <td>{{ employee.country }}</td>
+        <td>{{ employee.department }}</td>
+        <td>{{ employee.jobTitle }}</td>
+
+        <td>
+            <span
+              class="status"
+              [class.active]="employee.employmentStatus === 'ACTIVE'"
+              [class.inactive]="employee.employmentStatus !== 'ACTIVE'"
+            >
+              {{ employee.employmentStatus }}
+            </span>
+        </td>
+      </tr>
+
+      <tr *ngIf="employees.length === 0">
+        <td colspan="6" class="empty-message">
+          No employees found.
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!loading && !errorMessage" class="pagination">
+    <span>
+      Showing {{ startRecord }}–{{ endRecord }} of {{ totalElements }} employees
+    </span>
+
+    <div>
+      <button
+        class="secondary-button"
+        [disabled]="currentPage === 0"
+        (click)="goToPage(currentPage - 1)"
+      >
+        Previous
+      </button>
+
+      <span>Page {{ currentPage + 1 }} of {{ totalPages || 1 }}</span>
+
+      <button
+        class="secondary-button"
+        [disabled]="currentPage + 1 >= totalPages"
+        (click)="goToPage(currentPage + 1)"
+      >
+        Next
+      </button>
+    </div>
+  </div>
+</section>

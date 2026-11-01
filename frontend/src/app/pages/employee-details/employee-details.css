@@ -1,0 +1,44 @@
+.edit-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  margin-left: auto;
+  border: 1px solid #1d4ed8;
+  border-radius: 6px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.edit-button:hover {
+  background: #1d4ed8;
+}
+
+@media (max-width: 650px) {
+  .profile-header {
+    flex-wrap: wrap;
+  }
+
+  .edit-button {
+    margin-left: 0;
+  }
+}
+.salary-button {
+  display: inline-block;
+  margin-left: 10px;
+  padding: 10px 16px;
+  background: #0f766e;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.salary-button:hover {
+  background: #115e59;
+}

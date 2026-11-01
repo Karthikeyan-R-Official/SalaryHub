@@ -1,0 +1,232 @@
+<section class="page-content">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">OVERVIEW</p>
+      <h2>Dashboard</h2>
+      <p class="page-description">
+        A clear overview of your employees and salary records.
+      </p>
+    </div>
+
+    <button
+      class="refresh-button"
+      type="button"
+      (click)="loadDashboard()"
+      [disabled]="loading"
+    >
+      <span class="refresh-icon">↻</span>
+      {{ loading ? 'Loading...' : 'Refresh data' }}
+    </button>
+  </div>
+
+  <div class="error-banner" *ngIf="errorMessage" role="alert">
+    <span>{{ errorMessage }}</span>
+    <button type="button" (click)="loadDashboard()">Try again</button>
+  </div>
+
+  <div class="loading-banner" *ngIf="loading">
+    Loading the latest dashboard information...
+  </div>
+
+  <section class="summary-grid" aria-label="Employee summary">
+    <article class="summary-card">
+      <div class="card-top">
+        <span class="card-label">Total employees</span>
+        <span class="card-icon employees-icon">♙</span>
+      </div>
+
+      <div class="card-value">
+        {{
+        overview?.totalEmployees == null
+        ? '—'
+        : (overview?.totalEmployees | number)
+        }}
+      </div>
+
+      <p class="card-caption">Employees in the system</p>
+    </article>
+
+    <article class="summary-card">
+      <div class="card-top">
+        <span class="card-label">Active employees</span>
+        <span class="card-icon active-icon">✓</span>
+      </div>
+
+      <div class="card-value">
+        {{
+        overview?.activeEmployees == null
+        ? '—'
+        : (overview?.activeEmployees | number)
+        }}
+      </div>
+
+      <p class="card-caption">
+        <span class="inline-status active-text">
+          <span class="status-dot"></span>
+          Active
+        </span>
+        employees
+      </p>
+    </article>
+
+    <article class="summary-card">
+      <div class="card-top">
+        <span class="card-label">Inactive employees</span>
+        <span class="card-icon inactive-icon">–</span>
+      </div>
+
+      <div class="card-value">
+        {{
+        overview?.inactiveEmployees == null
+        ? '—'
+        : (overview?.inactiveEmployees | number)
+        }}
+      </div>
+
+      <p class="card-caption">Currently inactive</p>
+    </article>
+
+    <article class="summary-card">
+      <div class="card-top">
+        <span class="card-label">Salary records</span>
+        <span class="card-icon salary-icon">₹</span>
+      </div>
+
+      <div class="card-value">
+        {{
+        overview?.totalSalaryRecords == null
+        ? '—'
+        : (overview?.totalSalaryRecords | number)
+        }}
+      </div>
+
+      <p class="card-caption">Recorded salary entries</p>
+    </article>
+  </section>
+
+  <section class="insights-grid">
+    <article class="panel">
+      <div class="panel-header">
+        <div>
+          <h3>Salary by country</h3>
+          <p>Average salary and employee distribution</p>
+        </div>
+
+        <span class="panel-badge">
+          {{ countryBreakdown.length }} groups
+        </span>
+      </div>
+
+      <div
+        class="empty-state"
+        *ngIf="!loading && countryBreakdown.length === 0"
+      >
+        No country salary data is available yet.
+      </div>
+
+      <div class="breakdown-list" *ngIf="countryBreakdown.length > 0">
+        <div
+          class="breakdown-row"
+          *ngFor="let row of countryBreakdown; trackBy: trackByGroupName"
+        >
+          <div class="breakdown-main">
+            <div class="group-details">
+              <span class="group-name">{{ row.groupName }}</span>
+              <span class="group-count">
+                {{ row.employeeCount | number }} employees
+              </span>
+            </div>
+
+            <div class="salary-details">
+              <span class="salary-value">
+                {{
+                  isNumeric(row.averageSalary)
+                    ? (row.averageSalary | currency: row.currency : 'symbol' : '1.0-0')
+                    : '—'
+                }}
+              </span>
+              <span class="salary-label">average</span>
+            </div>
+          </div>
+
+          <div class="bar-track" aria-hidden="true">
+            <div
+              class="bar-fill country-bar"
+              [style.width.%]="getEmployeeBarWidth(row.employeeCount, countryBreakdown)"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <p class="panel-footnote">
+        Averages are shown in each group's reported currency.
+      </p>
+    </article>
+
+    <article class="panel">
+      <div class="panel-header">
+        <div>
+          <h3>Salary by department</h3>
+          <p>Average salary and employee distribution</p>
+        </div>
+
+        <span class="panel-badge">
+          {{ departmentBreakdown.length }} groups
+        </span>
+      </div>
+
+      <div
+        class="empty-state"
+        *ngIf="!loading && departmentBreakdown.length === 0"
+      >
+        No department salary data is available yet.
+      </div>
+
+      <div class="breakdown-list" *ngIf="departmentBreakdown.length > 0">
+        <div
+          class="breakdown-row"
+          *ngFor="
+            let row of departmentBreakdown;
+            trackBy: trackByGroupName
+          "
+        >
+          <div class="breakdown-main">
+            <div class="group-details">
+              <span class="group-name">{{ row.groupName }}</span>
+              <span class="group-count">
+                {{ row.employeeCount | number }} employees
+              </span>
+            </div>
+
+            <div class="salary-details">
+              <span class="salary-value">
+                {{
+                  isNumeric(row.averageSalary)
+                    ? (row.averageSalary | currency: row.currency : 'symbol' : '1.0-0')
+                    : '—'
+                }}
+              </span>
+              <span class="salary-label">average</span>
+            </div>
+          </div>
+
+          <div class="bar-track" aria-hidden="true">
+            <div
+              class="bar-fill department-bar"
+              [style.width.%]="getEmployeeBarWidth(row.employeeCount, departmentBreakdown)"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <p class="panel-footnote">
+        Averages are shown in each group's reported currency.
+      </p>
+    </article>
+  </section>
+
+  <footer class="page-footer">
+    <span>SalaryHub · HR Management</span>
+    <span>Dashboard data is provided by the backend API.</span>
+  </footer>
+</section>

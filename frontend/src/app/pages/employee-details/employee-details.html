@@ -1,0 +1,135 @@
+<section class="details-page">
+
+  <div class="page-heading">
+    <div>
+      <a routerLink="/employees" class="back-link">
+        ← Back to Employees
+      </a>
+
+      <h1>Employee Details</h1>
+      <p>View complete employee information.</p>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="message">
+    Loading employee details...
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <ng-container *ngIf="!loading && employee">
+
+    <section class="profile-card">
+
+      <div class="profile-header">
+
+        <div class="avatar">
+          {{ employee.firstName.charAt(0) }}{{ employee.lastName.charAt(0) }}
+        </div>
+
+        <div class="profile-info">
+          <h2>{{ employee.firstName }} {{ employee.lastName }}</h2>
+          <p>{{ employee.jobTitle }}</p>
+          <span class="employee-code">
+            {{ employee.employeeCode }}
+          </span>
+        </div>
+
+        <span
+          class="status"
+          [class.active]="employee.employmentStatus === 'ACTIVE'"
+          [class.inactive]="employee.employmentStatus !== 'ACTIVE'"
+        >
+          {{ employee.employmentStatus }}
+        </span>
+
+        <a
+          [routerLink]="['/employees', employee.id, 'edit']"
+          class="edit-button"
+        >
+          Edit Employee
+        </a>
+        <a
+          [routerLink]="['/employees', employee.id, 'salaries']"
+          class="salary-button"
+        >
+          Manage Salary
+        </a>
+
+      </div>
+
+    </section>
+
+    <section class="details-card">
+
+      <h3>Personal Information</h3>
+
+      <div class="details-grid">
+
+        <div class="detail-item">
+          <span>First Name</span>
+          <strong>{{ employee.firstName }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Last Name</span>
+          <strong>{{ employee.lastName }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Email Address</span>
+          <strong>{{ employee.email }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Employee ID</span>
+          <strong>{{ employee.employeeCode }}</strong>
+        </div>
+
+      </div>
+
+      <div class="section-divider"></div>
+
+      <h3>Employment Information</h3>
+
+      <div class="details-grid">
+
+        <div class="detail-item">
+          <span>Department</span>
+          <strong>{{ employee.department }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Job Title</span>
+          <strong>{{ employee.jobTitle }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Country</span>
+          <strong>{{ employee.country }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Hire Date</span>
+          <strong>{{ employee.hireDate | date:'dd MMM yyyy' }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Employment Status</span>
+          <strong>{{ employee.employmentStatus }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Database ID</span>
+          <strong>{{ employee.id }}</strong>
+        </div>
+
+      </div>
+
+    </section>
+
+  </ng-container>
+
+</section>
