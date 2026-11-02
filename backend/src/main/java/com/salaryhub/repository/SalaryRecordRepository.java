@@ -1,9 +1,13 @@
 package com.salaryhub.repository;
 
 import com.salaryhub.entity.SalaryRecord;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.List;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 import java.util.List;
 
 public interface SalaryRecordRepository
@@ -16,6 +20,43 @@ public interface SalaryRecordRepository
     boolean existsByEmployee_IdAndEffectiveDate(
             Long employeeId,
             java.time.LocalDate effectiveDate
+    );
+
+    @EntityGraph(attributePaths = "employee")
+    @Query("""
+        SELECT s
+        FROM SalaryRecord s
+        JOIN s.employee e
+        WHERE (
+            :search IS NULL OR :search = ''
+            OR LOWER(e.employeeCode) LIKE LOWER(CONCAT('%', :search, '%'))
+            OR LOWER(e.firstName) LIKE LOWER(CONCAT('%', :search, '%'))
+            OR LOWER(e.lastName) LIKE LOWER(CONCAT('%', :search, '%'))
+            OR LOWER(CONCAT(e.firstName, ' ', e.lastName))
+                LIKE LOWER(CONCAT('%', :search, '%'))
+            OR LOWER(e.email) LIKE LOWER(CONCAT('%', :search, '%'))
+        )
+        AND (:employeeId IS NULL OR e.id = :employeeId)
+        AND (
+            :country IS NULL OR :country = ''
+            OR LOWER(e.country) = LOWER(:country)
+        )
+        AND (
+            :department IS NULL OR :department = ''
+            OR LOWER(e.department) = LOWER(:department)
+        )
+        AND (
+            :currency IS NULL OR :currency = ''
+            OR UPPER(s.currency) = UPPER(:currency)
+        )
+        """)
+    Page<SalaryRecord> searchSalaryRecords(
+            @Param("search") String search,
+            @Param("employeeId") Long employeeId,
+            @Param("country") String country,
+            @Param("department") String department,
+            @Param("currency") String currency,
+            Pageable pageable
     );
 
     @Query(value = """

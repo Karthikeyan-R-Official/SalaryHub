@@ -1,0 +1,153 @@
+<section class="page-heading">
+  <div>
+    <h1>Salary Records</h1>
+    <p>View and track salary records across all employees.</p>
+  </div>
+</section>
+
+<section class="salary-summary">
+  <div class="summary-card">
+    <span>Total Salary Records</span>
+    <strong>{{ totalElements | number }}</strong>
+  </div>
+
+  <div class="summary-card">
+    <span>Current Page</span>
+    <strong>{{ currentPage + 1 }} / {{ totalPages || 1 }}</strong>
+  </div>
+</section>
+
+<section class="salary-panel">
+
+  <div class="filter-section">
+    <input
+      type="text"
+      placeholder="Search by employee name, email, code or ID"
+      [(ngModel)]="search"
+      (keyup.enter)="applyFilters()"
+    />
+
+    <select [(ngModel)]="country" (change)="applyFilters()">
+      <option value="">All Countries</option>
+      <option *ngFor="let item of countries" [value]="item">
+        {{ item }}
+      </option>
+    </select>
+
+    <select [(ngModel)]="department" (change)="applyFilters()">
+      <option value="">All Departments</option>
+      <option *ngFor="let item of departments" [value]="item">
+        {{ item }}
+      </option>
+    </select>
+
+    <select [(ngModel)]="currency" (change)="applyFilters()">
+      <option value="">All Currencies</option>
+      <option *ngFor="let item of currencies" [value]="item">
+        {{ item }}
+      </option>
+    </select>
+
+    <button class="primary-button" (click)="applyFilters()">
+      Search
+    </button>
+
+    <button class="secondary-button" (click)="clearFilters()">
+      Clear
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="message">
+    Loading salary records...
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="!loading && !errorMessage" class="table-wrapper">
+    <table>
+      <thead>
+      <tr>
+        <th>Employee</th>
+        <th>Employee ID</th>
+        <th>Country</th>
+        <th>Department</th>
+        <th>Job Title</th>
+        <th>Salary</th>
+        <th>Effective Date</th>
+        <th>Notes</th>
+        <th>Action</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr *ngFor="let record of records; trackBy: trackBySalaryId">
+        <td>
+          <div class="employee-name">
+            <strong>{{ record.employeeName }}</strong>
+          </div>
+        </td>
+
+        <td>{{ record.employeeCode }}</td>
+        <td>{{ record.country }}</td>
+        <td>{{ record.department }}</td>
+        <td>{{ record.jobTitle }}</td>
+
+        <td class="salary-amount">
+          {{ record.amount | number:'1.2-2' }} {{ record.currency }}
+        </td>
+
+        <td>{{ record.effectiveDate | date:'dd MMM yyyy' }}</td>
+
+        <td class="notes-cell">
+          {{ record.notes || '—' }}
+        </td>
+
+        <td>
+          <a
+            class="history-link"
+            [routerLink]="['/employees', record.employeeId, 'salaries']"
+          >
+            View History
+          </a>
+        </td>
+      </tr>
+
+      <tr *ngIf="records.length === 0">
+        <td colspan="9" class="empty-message">
+          No salary records found.
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!loading && !errorMessage" class="pagination">
+    <span>
+      Showing {{ startRecord }}–{{ endRecord }}
+      of {{ totalElements }} salary records
+    </span>
+
+    <div>
+      <button
+        class="secondary-button"
+        [disabled]="currentPage === 0"
+        (click)="goToPage(currentPage - 1)"
+      >
+        Previous
+      </button>
+
+      <span>Page {{ currentPage + 1 }} of {{ totalPages || 1 }}</span>
+
+      <button
+        class="secondary-button"
+        [disabled]="currentPage + 1 >= totalPages"
+        (click)="goToPage(currentPage + 1)"
+      >
+        Next
+      </button>
+    </div>
+  </div>
+
+</section>

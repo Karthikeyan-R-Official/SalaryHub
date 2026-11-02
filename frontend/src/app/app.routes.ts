@@ -5,6 +5,7 @@ import { EmployeeComponent } from './pages/employee/employee';
 import { EmployeeDetailsComponent } from './pages/employee-details/employee-details';
 import { AddEmployeeComponent } from './pages/add-employee/add-employee';
 import { SalaryHistoryComponent } from './pages/salary-history/salary-history';
+import { SalaryRecordsComponent } from './pages/salary-records/salary-records';
 import { LoginComponent } from './pages/login/login';
 import { authGuard } from './guards/auth.guard';
 
@@ -36,6 +37,12 @@ export const routes: Routes = [
   {
     path: 'employees/:id/salaries',
     component: SalaryHistoryComponent,
+    canActivate: [authGuard]
+  },
+
+  {
+    path: 'salary-records',
+    component: SalaryRecordsComponent,
     canActivate: [authGuard]
   },
 
