@@ -1,3 +1,9 @@
+@if (router.url === '/login') {
+
+<router-outlet></router-outlet>
+
+} @else {
+
 <div class="app-shell">
   <aside class="sidebar">
     <div class="brand">
@@ -17,7 +23,7 @@
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
       >
-        <span class="nav-icon">▦</span>
+        <span class="nav-icon">◫</span>
         <span>Dashboard</span>
       </a>
 
@@ -31,7 +37,7 @@
       </a>
 
       <div class="nav-item muted">
-        <span class="nav-icon">▤</span>
+        <span class="nav-icon">◤</span>
         <span>Salary records</span>
         <span class="nav-status">Soon</span>
       </div>
@@ -59,15 +65,32 @@
       </div>
 
       <div class="topbar-right">
-        <span class="system-indicator">
-          <span class="status-dot"></span>
-          HR overview
-        </span>
+  <span class="system-indicator">
+    <span class="status-dot"></span>
+    HR overview
+  </span>
 
-        <div class="avatar" aria-label="HR manager">HR</div>
+        <div class="user-info">
+          <div class="user-details">
+            <strong>{{ username || 'HR Manager' }}</strong>
+            <span>HR Manager</span>
+          </div>
+
+          <div class="avatar" aria-label="HR manager">HR</div>
+        </div>
+
+        <button
+          type="button"
+          class="logout-button"
+          (click)="logout()"
+        >
+          Logout
+        </button>
       </div>
     </header>
 
     <router-outlet></router-outlet>
   </main>
 </div>
+
+}

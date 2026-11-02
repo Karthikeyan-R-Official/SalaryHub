@@ -1,0 +1,60 @@
+<div class="login-page">
+  <div class="login-card">
+
+    <div class="brand-mark">S</div>
+
+    <h1>Welcome to SalaryHub</h1>
+
+    <p class="subtitle">
+      Sign in to access your HR workspace.
+    </p>
+
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+
+      <div class="form-group">
+        <label for="username">Username</label>
+
+        <input
+          id="username"
+          type="text"
+          name="username"
+          [(ngModel)]="username"
+          placeholder="Enter your username"
+          autocomplete="username"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+
+        <input
+          id="password"
+          type="password"
+          name="password"
+          [(ngModel)]="password"
+          placeholder="Enter your password"
+          autocomplete="current-password"
+          required
+        />
+      </div>
+
+      <p class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </p>
+
+      <button
+        type="submit"
+        [disabled]="loading || loginForm.invalid"
+      >
+        {{ loading ? 'Signing in...' : 'Sign in' }}
+      </button>
+
+    </form>
+
+    <p class="footer-text">
+      SalaryHub · HR Management
+    </p>
+
+  </div>
+</div>
