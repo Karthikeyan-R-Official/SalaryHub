@@ -1,59 +1,130 @@
-# Frontend
+# SalaryHub – Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.5.
+SalaryHub is an employee salary management application built using Angular. It provides an interface for HR Managers to manage employee information, salary records, salary revisions, and salary analytics.
 
-## Development server
+## Technology Stack
 
-To start a local development server, run:
+- Angular 22
+- TypeScript
+- HTML and CSS
+- Angular Router
+- Angular HTTP Client
+- JWT-based authentication
 
-```bash
-ng serve
+## Features
+
+- HR Manager login and logout
+- Protected application routes
+- Dashboard with employee and salary statistics
+- Employee listing, search, filtering, and pagination
+- Create and update employee information
+- View employee details
+- Manage employee salary records
+- Add salary revisions with effective dates
+- View salary revision history
+- Global salary records across employees
+- Filter salary records by country, department, and currency
+- Dashboard salary analytics grouped by country and department
+
+## Project Structure
+
+```text
+frontend/
+├── public/
+├── src/
+│   ├── app/
+│   │   ├── components/
+│   │   ├── services/
+│   │   ├── guards/
+│   │   └── ...
+│   ├── index.html
+│   └── styles.css
+├── angular.json
+├── package.json
+├── proxy.conf.json
+└── vercel.json
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Prerequisites
 
-## Code scaffolding
+Install the following before running the application:
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- Node.js
+- npm
 
-```bash
-ng generate component component-name
-```
+## Local Development Setup
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+### 1. Navigate to the frontend directory
 
 ```bash
-ng build
+cd frontend
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+### 2. Install dependencies
 
 ```bash
-ng test
+npm install
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+### 3. Start the development server
 
 ```bash
-ng e2e
+npm start
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+The application will be available at:
 
-## Additional Resources
+```text
+http://localhost:4200
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+The development server uses `proxy.conf.json` to forward `/api` requests to the local Spring Boot backend.
+
+Make sure the backend is running before testing application features that require API access.
+
+## Build
+
+To create a production build:
+
+```bash
+npm run build
+```
+
+The generated production files are stored in:
+
+```text
+dist/frontend/browser/
+```
+
+## Testing
+
+To run the frontend unit tests:
+
+```bash
+npm test
+```
+
+## Backend Integration
+
+The frontend communicates with the Spring Boot backend through REST APIs.
+
+During local development, API requests are forwarded through the Angular development proxy.
+
+In production, Vercel rewrites `/api` requests to the deployed backend.
+
+## Deployment
+
+The frontend is deployed using Vercel.
+
+- **Frontend:** https://salaryhub-hr-management.vercel.app
+- **Backend:** https://salaryhub-backend.onrender.com
+
+The application uses the deployed backend APIs for authentication, employee management, salary management, and analytics.
+
+## Important Notes
+
+- Authentication uses JWT tokens.
+- Protected API requests include the JWT token in the Authorization header.
+- The application uses relative API paths, allowing the same frontend code to work in local and production environments.
+- Do not commit passwords, JWT secrets, database credentials, or other sensitive information.
+
